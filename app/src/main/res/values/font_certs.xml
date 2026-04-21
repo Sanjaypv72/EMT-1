@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="com_google_android_gms_fonts_certs">
+        <item>@array/com_google_android_gms_fonts_certs_dev</item>
+        <item>@array/com_google_android_gms_fonts_certs_prod</item>
+    </array>
+
+    <string-array name="com_google_android_gms_fonts_certs_dev">
+        <item>
+            MIIEqDCCA5CgAwIBAgIJANWFuGx90071MA0GCSqGSIb3DQEBBAUAMIGUMQswCQYD
+            VQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZyYW5j
+            aXNjbzETMBEGA1UEChMKR29vZ2xlIEluYzEUMBIGA1UECxMLRW5naW5lZXJpbmcx
+            FDASBgNVBAMTC0dvb2dsZSBJbmMwHhcNMDgwMTAxMDAwMDAwWhcNMzUxMjMxMjM1
+            OTU5WjCBlDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNV
+            BAcTDVNhbiBGcmFuY2lzY28xEzARBgNVBAoTCkdvb2dsZSBJbmMxFDASBgNVBAsT
+            C0VuZ2luZWVyaW5nMRQwEgYDVQQDEwtHb29nbGUgSW5jMIIBIjANBgkqhkiG9w0B
+            AQEFAAOCAQ8AMIIBCgKCAQEA2a2rwplBQLF29amygykEMmYz0+Kcj3bKBp29OZsq
+            hDMCEEGnKzFMSbGpMkBFU8aGJYEPAQKMbFEBmkYMCLEGqxrqXdMirEzKnWOaHDl
+            qKb7GMXZ3Kq2/F4bzmzqt8UUAlrRBHVBcGjuGBujZbxN4+4SVMW4KKKuMFkMkqn
+            +fxCfF6IIo0E0QpPxPSMXjHwBN2RlFvJmVAi6VFNs4U/0m4jCHVnMrLMFPaQEZg
+            BuDqjAT8WGMkCCOb0hsYbMkGjYeUCHbAbfvFkYJABvFmr3iOGNRCjLrZCR8OVMVS
+            sYeoxfLMaAPbIh09e1pNwSQFYTcr71/MdizgewIDAQABo4HzMIHwMB0GA1UdDgQW
+            BBTb/UB1mSMhqiNoZqB8wNF5cCXGsjCBwAYDVR0jBIG4MIG1gBTb/UB1mSMhqiNo
+            ZqB8wNF5cCXGsqGBmqSBlzCBlDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlm
+            b3JuaWExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xEzARBgNVBAoTCkdvb2dsZSBJ
+            bmMxFDASBgNVBAsTC0VuZ2luZWVyaW5nMRQwEgYDVQQDEwtHb29nbGUgSW5jggkA
+            zYW4bH3TjjAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQQFAAOCAQEATEUMPpFv
+            KYGqFbAHZXOrZBJGN0HNzRL6iHLG9d+8NZLB4sRLH2HUYqQqzfE+mCzQMQwkAaR
+            szN5P3XFBriKi1KOMzSwwHHMArJDXtjHVXjJiLqXi7KMrGbXTUmRJrxbLMBMEDZe
+            MxHHH+xwTVqaHECBtgNzM9GNy+kOBF5Vv+t4U2tDY+C9pVuHiMFEdm4cMVeJaFt
+            8h5mTnLYH/j0Q4s70VyJQ+kHMGkqMTI0D6r0H+9y1MGoWL5bj4Z02Y+VfFxEYpV
+            v0tqq+KpQbJBKmEhQ4HwT39qS5hn0D5Bkk7DmB0fKCF2jq6aUDHRpXFP+zW7Gy
+            qHlKu/N6sFAfUA==
+        </item>
+    </string-array>
+
+    <string-array name="com_google_android_gms_fonts_certs_prod">
+        <item>
+            MIIEQzCCAyugAwIBAgIJAMLgh0ZkSjCNMA0GCSqGSIb3DQEBBAUAMHQxCzAJBgNV
+            BAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3VudGFpbiBW
+            aWV3MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEQMA4GA1UECxMHQW5kcm9pZDEQMA4G
+            A1UEAxMHQW5kcm9pZDAeFw0wODA4MjEyMzEzMzRaFw0zNjAxMDcyMzEzMzRaMHQx
+            CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3Vu
+            dGFpbiBWaWV3MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEQMA4GA1UECxMHQW5kcm9p
+            ZDEQMA4GA1UEAxMHQW5kcm9pZDCCASAwDQYJKoZIhvcNAQEBBQADggENADCCAQgC
+            ggEBAKtWLgDYO6IIrgqWbxJOKdoR8qtW0I9Y4sypEwPpt1TTcvZApxsdyxMJsWd/
+            2ZHziZLy4vGFG9eIjCFMnEMRQqg2UvQgGolX2WXKxqRCGF0g7ZIXB5GkXnFL04G
+            Ji1fgKbwKp+QvW7LbBjHNBBGOybPHIi/lbD5Z/OdUxB2piIIXCi7QJIq8dbXMQp
+            m2bFAZBBUkbBFWzASNqc+DZ3EOrE0hy9DYM3bUWt2oGFHpSaR7eDjCLNeSFijmo3
+            +BLMR5DfS2dslk97JmRcGMPFHVBFJ5MFnH6ufXcQBJ0O99C1zBUibJpCtnGEefx8
+            iPlKF1CJGwrwvDIEBmMCAQOjgdkwgdYwHQYDVR0OBBYEFMd9jMIhF1Ujqp6R9ZRY
+            BjRGwJYwgaYGA1UdIwSBnjCBm4AUx32MwiEXVSOqnpH1lFgGNEbAljaheKR2MHQx
+            CzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1Nb3Vu
+            dGFpbiBWaWV3MRQwEgYDVQQKEwtHb29nbGUgSW5jLjEQMA4GA1UECxMHQW5kcm9p
+            ZDEQMA4GA1UEAxMHQW5kcm9pZIIJAMLgh0ZkSjCNMAwGA1UdEwQFMAMBAf8wDQYJ
+            KoZIhvcNAQEEBQADggEBABR7p4k5rADUlYPMMl2PFpDMBpHsZ9KCGNDjL6hxAVpJ
+            TTJMqkJBBNk9BkZdT/RqSvIHIFZb/oFHFYe7+GnRDRuCHrPjV/Wd+n5eBaTXbIF
+            9GKZA5BWjBaUVe9NcZ+7/7yj3qRvFvBhSAEcHH+IfBH1Yy+Kk6P9GNID9xMvRFp
+            LiM3TgbPxz+v5f+kAiJ0XLtKi65E1GJP5s+pCXTT2mOhrHNgGX7XGbFRnfpwLh2
+            FcmZL2HT2X4bHuPQl6DELeANRQfDOq0L6mE+Q/E3FJhb8Zp0SKNQ5ZQpD8IIAJP
+            9B9SMhQwxBblRMIeZXzUeXJmzYbPjHDuwuc=
+        </item>
+    </string-array>
+</resources>

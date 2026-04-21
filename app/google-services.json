@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "411292861870",
+    "project_id": "emt-m-98297",
+    "storage_bucket": "emt-m-98297.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411292861870:android:566b31b345b58c136d743f",
+        "android_client_info": {
+          "package_name": "com.emt.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1YolzLxbI7SGT902F9TJ8GIBVEjTDN7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
