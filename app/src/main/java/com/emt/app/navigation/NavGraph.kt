@@ -124,16 +124,17 @@ fun NavGraph(navController: NavHostController) {
 
         composable(Routes.ANALYTICS) {
             AnalyticsDashboard(
-                employeeVM       = employeeVM,
-                taskVM           = taskVM,
-                performanceVM    = performanceVM,
-                attendanceVM     = attendanceVM,
-                onSettingsClick  = { navController.navigate(Routes.SETTINGS) },
-                onAttendanceClick= { navController.navigate(Routes.ATTENDANCE) },
-                onReportsClick   = { navController.navigate(Routes.REPORTS) }
+                employeeVM        = employeeVM,
+                taskVM            = taskVM,
+                performanceVM     = performanceVM,
+                attendanceVM      = attendanceVM,
+                onSettingsClick   = { navController.navigate(Routes.SETTINGS) },
+                onAttendanceClick = { navController.navigate(Routes.ATTENDANCE) },
+                onReportsClick    = { navController.navigate(Routes.REPORTS) }
             )
         }
 
+        // Staff panel: My Tasks - has back button to go to login/logout
         composable(Routes.MY_TASKS) {
             MyTasksScreen(
                 taskVM          = taskVM,
@@ -170,18 +171,21 @@ fun NavGraph(navController: NavHostController) {
 
         composable(Routes.SETTINGS) {
             SettingsScreen(
-                employeeVM = employeeVM, // Pass this!
-                isAdmin = true,
-                onBack = { navController.popBackStack() },
-                onLogout = { /* ... */ },
-                onProfileClick = { /* ... */ },
-                onNotificationsClick = { /* ... */ },
-                onChangePasswordClick = { /* ... */ },
-                onAboutClick = { /* ... */ }
+                employeeVM           = employeeVM,
+                isAdmin              = true,
+                onBack               = { navController.popBackStack() },
+                onLogout             = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onProfileClick       = { navController.navigate(Routes.PROFILE_INFO) },
+                onNotificationsClick = { navController.navigate(Routes.NOTIFICATIONS) },
+                onChangePasswordClick= { navController.navigate(Routes.CHANGE_PASSWORD) },
+                onAboutClick         = { navController.navigate(Routes.ABOUT_APP) }
             )
         }
 
-        // ✅ FIXED: Passed employeeVM to ProfileInfoScreen
         composable(Routes.PROFILE_INFO) {
             ProfileInfoScreen(
                 employeeVM = employeeVM,
