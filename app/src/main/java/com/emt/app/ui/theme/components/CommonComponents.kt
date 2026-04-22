@@ -30,10 +30,15 @@ fun EMTTextField(
         shape = RoundedCornerShape(12.dp),
         singleLine = singleLine,
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor   = Color(0xFF00796B),
-            unfocusedBorderColor = Color(0xFFE0E0E0),
+            focusedBorderColor      = Color(0xFF00796B),
+            unfocusedBorderColor    = Color(0xFFE0E0E0),
             focusedContainerColor   = Color.White,
-            unfocusedContainerColor = Color.White
+            unfocusedContainerColor = Color.White,
+            focusedTextColor        = Color(0xFF0D1117),  // ✅ dark text on white bg
+            unfocusedTextColor      = Color(0xFF0D1117),  // ✅ dark text on white bg
+            focusedLabelColor       = Color(0xFF00796B),
+            unfocusedLabelColor     = Color(0xFF9CA3AF),
+            cursorColor             = Color(0xFF00796B),
         )
     )
 }
@@ -55,10 +60,10 @@ fun SectionLabel(text: String) {
 @Composable
 fun StatusChip(status: String) {
     val (bg, fg) = when (status) {
-        "Completed" -> Color(0xFFFFF8E1) to Color(0xFF2E7D32)
-        "In Progress" -> Color(0xFFFFF8E1) to Color(0xFFF57F17)
-        "Reviewed"  -> Color(0xFFE0F2F1) to Color(0xFF00796B)
-        else        -> Color(0xFFFFEBEE) to Color(0xFFC62828) // Pending
+        "Completed"  -> Color(0xFFE8F5E9) to Color(0xFF2E7D32)
+        "In Progress"-> Color(0xFFFFF8E1) to Color(0xFFF57F17)
+        "Reviewed"   -> Color(0xFFE0F2F1) to Color(0xFF00796B)
+        else         -> Color(0xFFFFEBEE) to Color(0xFFC62828) // Pending
     }
     Box(
         modifier = Modifier
@@ -81,7 +86,7 @@ fun PriorityChip(priority: String) {
     val (bg, fg) = when (priority) {
         "High"   -> Color(0xFFFFEBEE) to Color(0xFFC62828)
         "Medium" -> Color(0xFFFFF8E1) to Color(0xFFF57F17)
-        else     -> Color(0xFFFFF8E1) to Color(0xFF2E7D32) // Low
+        else     -> Color(0xFFE8F5E9) to Color(0xFF2E7D32) // Low
     }
     Box(
         modifier = Modifier
@@ -112,6 +117,27 @@ fun DeptBadge(dept: String) {
             fontWeight = FontWeight.Medium,
             fontSize = 11.sp,
             color = Color(0xFF00796B)
+        )
+    }
+}
+
+// ── Dark Metric Bar (used in EmployeeDetailScreen) ───
+@Composable
+fun DarkMetricBar(label: String, value: Float) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(label, fontFamily = InterFamily, fontSize = 12.sp, color = Color(0xFF9CA3AF))
+            Text("${"%.1f".format(value)}/5", fontFamily = InterFamily,
+                fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color(0xFFD1D5DB))
+        }
+        LinearProgressIndicator(
+            progress = { (value / 5f).coerceIn(0f, 1f) },
+            modifier = Modifier.fillMaxWidth().height(6.dp),
+            color = Color(0xFF00796B),
+            trackColor = Color(0xFF21262D),
         )
     }
 }

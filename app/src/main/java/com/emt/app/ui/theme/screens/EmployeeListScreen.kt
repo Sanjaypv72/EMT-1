@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.emt.app.model.Employee
 import com.emt.app.navigation.Routes
@@ -31,7 +30,7 @@ import com.emt.app.ui.theme.InterFamily
 import com.emt.app.ui.theme.PoppinsFamily
 import com.emt.app.viewmodel.EmployeeViewModel
 
-// Avatar color palette — replaces avatarColor from EmployeeUI
+// Avatar color palette
 private val avatarColors = listOf(
     0xFF00796BL, 0xFF43A047L, 0xFF7B1FA2L,
     0xFFE65100L, 0xFF00838FL, 0xFFC62828L
@@ -48,15 +47,18 @@ private val departmentList = listOf(
 @Composable
 fun EmployeeListScreen(
     navController: NavHostController,
+    employeeVM: EmployeeViewModel, // We only need this one
     onAddEmployee: () -> Unit,
-    onEmployeeClick: (Employee) -> Unit,           // ✅ Fixed: Employee not EmployeeUI
-    viewModel: EmployeeViewModel = viewModel()
+    onEmployeeClick: (Employee) -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedDept by remember { mutableStateOf("All") }
 
-    val allEmployees by viewModel.employees.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    // Collect the employee list from the VM
+    val allEmployees by employeeVM.employees.collectAsState()
+
+    // We'll consider it "loading" if the list is empty (until DB returns data)
+    val isLoading = allEmployees.isEmpty()
 
     val filtered = allEmployees.filter { emp ->
         val matchSearch = emp.name.contains(searchQuery, ignoreCase = true) ||

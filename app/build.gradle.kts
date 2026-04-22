@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.emt.app"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -31,6 +31,7 @@ android {
         // ✅ 17 → 21 kar do — Kotlin ke saath match karega
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+
     }
 
     composeOptions {
@@ -58,4 +59,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
+    implementation("org.apache.xmlbeans:xmlbeans:5.1.1")
+    implementation("com.github.virtuald:curvesapi:1.07")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

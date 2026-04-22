@@ -1,17 +1,21 @@
 package com.emt.app.navigation
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.emt.app.model.Employee
 import com.emt.app.ui.theme.screens.*
+import com.emt.app.viewmodel.*
 
 object Routes {
     const val SPLASH           = "splash"
     const val LOGIN            = "login"
     const val EMPLOYEE_LIST    = "employee_list"
     const val ADD_EMPLOYEE     = "add_employee"
+    const val EDIT_EMPLOYEE    = "edit_employee"
     const val EMPLOYEE_DETAIL  = "employee_detail"
     const val TASK_ASSIGNMENT  = "task_assignment"
     const val PERFORMANCE_EVAL = "performance_eval"
@@ -24,13 +28,16 @@ object Routes {
     const val CHANGE_PASSWORD  = "change_password"
     const val ABOUT_APP        = "about_app"
     const val ATTENDANCE       = "attendance"
+    const val REPORTS          = "reports"
 }
 
 @Composable
 fun NavGraph(navController: NavHostController) {
 
-    // ✅ Employee (Firebase model) — consistent with EmployeeListScreen + EmployeeDetailScreen
-    var selectedEmployee by remember { mutableStateOf<Employee?>(null) }
+    val employeeVM   : EmployeeViewModel    = viewModel()
+    val taskVM       : TaskViewModel        = viewModel()
+    val performanceVM: PerformanceViewModel = viewModel()
+    val attendanceVM : AttendanceViewModel  = viewModel()
 
     NavHost(navController = navController, startDestination = Routes.SPLASH) {
 
@@ -60,82 +67,130 @@ fun NavGraph(navController: NavHostController) {
         composable(Routes.EMPLOYEE_LIST) {
             EmployeeListScreen(
                 navController   = navController,
+                employeeVM      = employeeVM,
                 onAddEmployee   = { navController.navigate(Routes.ADD_EMPLOYEE) },
-                onEmployeeClick = { emp: Employee ->      // ✅ explicit type — no ambiguity
-                    selectedEmployee = emp
+                onEmployeeClick = { emp ->
+                    employeeVM.selectEmployee(emp)
                     navController.navigate(Routes.EMPLOYEE_DETAIL)
                 }
             )
         }
 
         composable(Routes.ADD_EMPLOYEE) {
-            AddEditEmployeeScreen(onBack = { navController.popBackStack() })
+            AddEditEmployeeScreen(
+                existingEmployee = null,
+                employeeVM       = employeeVM,
+                onBack           = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.EDIT_EMPLOYEE) {
+            val selectedEmployee by employeeVM.selectedEmployee.collectAsState()
+            AddEditEmployeeScreen(
+                existingEmployee = selectedEmployee,
+                employeeVM       = employeeVM,
+                onBack           = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.EMPLOYEE_DETAIL) {
-            selectedEmployee?.let { emp ->
+            val emp by employeeVM.selectedEmployee.collectAsState()
+            if (emp != null) {
                 EmployeeDetailScreen(
-                    employee    = emp,
-                    onBack      = { navController.popBackStack() },
-                    onEditClick = { navController.navigate(Routes.ADD_EMPLOYEE) }
+                    employee      = emp!!,
+                    taskVM        = taskVM,
+                    performanceVM = performanceVM,
+                    onBack        = { navController.popBackStack() },
+                    onEditClick   = { navController.navigate(Routes.EDIT_EMPLOYEE) }
                 )
             }
         }
 
         composable(Routes.TASK_ASSIGNMENT) {
-            TaskAssignmentScreen(onBack = { navController.popBackStack() })
+            TaskAssignmentScreen(
+                employeeVM = employeeVM,
+                taskVM     = taskVM,
+                onBack     = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.PERFORMANCE_EVAL) {
-            PerformanceEvalScreen(onBack = { navController.popBackStack() })
+            PerformanceEvalScreen(
+                employeeVM    = employeeVM,
+                performanceVM = performanceVM,
+                onBack        = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.ANALYTICS) {
-            AnalyticsDashboard(onSettingsClick = { navController.navigate(Routes.SETTINGS) })
+            AnalyticsDashboard(
+                employeeVM       = employeeVM,
+                taskVM           = taskVM,
+                performanceVM    = performanceVM,
+                attendanceVM     = attendanceVM,
+                onSettingsClick  = { navController.navigate(Routes.SETTINGS) },
+                onAttendanceClick= { navController.navigate(Routes.ATTENDANCE) },
+                onReportsClick   = { navController.navigate(Routes.REPORTS) }
+            )
         }
 
         composable(Routes.MY_TASKS) {
-            MyTasksScreen(onSettingsClick = { navController.navigate(Routes.SETTINGS) })
+            MyTasksScreen(
+                taskVM          = taskVM,
+                employeeVM      = employeeVM,
+                onSettingsClick = { navController.navigate(Routes.SETTINGS) }
+            )
         }
 
         composable(Routes.MY_PERFORMANCE) {
-            MyPerformanceScreen(onBack = { navController.popBackStack() })
+            MyPerformanceScreen(
+                performanceVM = performanceVM,
+                employeeVM    = employeeVM,
+                onBack        = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.ATTENDANCE) {
-            AttendanceScreen(onBack = { navController.popBackStack() })
+            AttendanceScreen(
+                attendanceVM = attendanceVM,
+                employeeVM   = employeeVM,
+                onBack       = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.REPORTS) {
+            ReportsScreen(
+                employeeVM    = employeeVM,
+                taskVM        = taskVM,
+                performanceVM = performanceVM,
+                attendanceVM  = attendanceVM,
+                onBack        = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.SETTINGS) {
             SettingsScreen(
-                isAdmin               = true,
-                onBack                = { navController.popBackStack() },
-                onLogout              = {
-                    navController.navigate(Routes.LOGIN) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                onProfileClick        = { navController.navigate(Routes.PROFILE_INFO) },
-                onNotificationsClick  = { navController.navigate(Routes.NOTIFICATIONS) },
-                onChangePasswordClick = { navController.navigate(Routes.CHANGE_PASSWORD) },
-                onAboutClick          = { navController.navigate(Routes.ABOUT_APP) }
+                employeeVM = employeeVM, // Pass this!
+                isAdmin = true,
+                onBack = { navController.popBackStack() },
+                onLogout = { /* ... */ },
+                onProfileClick = { /* ... */ },
+                onNotificationsClick = { /* ... */ },
+                onChangePasswordClick = { /* ... */ },
+                onAboutClick = { /* ... */ }
             )
         }
 
+        // ✅ FIXED: Passed employeeVM to ProfileInfoScreen
         composable(Routes.PROFILE_INFO) {
-            ProfileInfoScreen(onBack = { navController.popBackStack() })
+            ProfileInfoScreen(
+                employeeVM = employeeVM,
+                onBack     = { navController.popBackStack() }
+            )
         }
 
-        composable(Routes.NOTIFICATIONS) {
-            NotificationsScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Routes.CHANGE_PASSWORD) {
-            ChangePasswordScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Routes.ABOUT_APP) {
-            AboutAppScreen(onBack = { navController.popBackStack() })
-        }
+        composable(Routes.NOTIFICATIONS)   { NotificationsScreen(onBack = { navController.popBackStack() }) }
+        composable(Routes.CHANGE_PASSWORD) { ChangePasswordScreen(onBack = { navController.popBackStack() }) }
+        composable(Routes.ABOUT_APP)       { AboutAppScreen(onBack = { navController.popBackStack() }) }
     }
 }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class AttendanceRepository {
-    private val db = FirebaseFirestore.getInstance()
+    private val db  = FirebaseFirestore.getInstance()
     private val col = db.collection("attendance")
 
     fun getAttendanceByDate(date: String): Flow<List<Attendance>> = callbackFlow {
@@ -27,6 +27,18 @@ class AttendanceRepository {
     fun getAttendanceByEmployee(employeeId: String): Flow<List<Attendance>> = callbackFlow {
         val listener = col.whereEqualTo("employeeId", employeeId)
             .orderBy("date", Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) { close(error); return@addSnapshotListener }
+                val list = snapshot?.documents?.mapNotNull {
+                    it.toObject(Attendance::class.java)?.copy(id = it.id)
+                } ?: emptyList()
+                trySend(list)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    fun getAllAttendance(): Flow<List<Attendance>> = callbackFlow {
+        val listener = col.orderBy("date", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) { close(error); return@addSnapshotListener }
                 val list = snapshot?.documents?.mapNotNull {
@@ -59,15 +71,13 @@ class AttendanceRepository {
         } catch (e: Exception) { Result.failure(e) }
     }
 
-    suspend fun getAttendanceByMonth(employeeId: String, month: String): List<Attendance> {
+    suspend fun getRecordForDate(employeeId: String, date: String): Attendance? {
         return try {
-            val snapshot = col.whereEqualTo("employeeId", employeeId)
-                .whereGreaterThanOrEqualTo("date", "$month-01")
-                .whereLessThanOrEqualTo("date", "$month-31")
-                .get().await()
-            snapshot.documents.mapNotNull {
+            val snap = col.whereEqualTo("employeeId", employeeId)
+                .whereEqualTo("date", date).limit(1).get().await()
+            snap.documents.firstOrNull()?.let {
                 it.toObject(Attendance::class.java)?.copy(id = it.id)
             }
-        } catch (e: Exception) { emptyList() }
+        } catch (e: Exception) { null }
     }
 }

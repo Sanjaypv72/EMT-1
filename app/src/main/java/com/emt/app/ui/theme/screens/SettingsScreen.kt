@@ -12,7 +12,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,12 +23,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+// --- ADDED IMPORTS ---
 import com.emt.app.ui.theme.InterFamily
 import com.emt.app.ui.theme.PoppinsFamily
+import com.emt.app.viewmodel.EmployeeViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    employeeVM: EmployeeViewModel, // Added ViewModel
     isAdmin: Boolean = true,
     onLogout: () -> Unit,
     onBack: () -> Unit,
@@ -38,7 +42,16 @@ fun SettingsScreen(
     onChangePasswordClick: () -> Unit,
     onAboutClick: () -> Unit
 ) {
-    val user = if (isAdmin) dummyEmployees[0].copy(name = "Admin User", role = "Administrator") else dummyEmployees[0]
+    // Collect the real user from the ViewModel
+    val employees by employeeVM.employees.collectAsState(initial = emptyList())
+
+    // Fallback logic if data is still loading
+    val baseUser = employees.firstOrNull()
+    val user = if (isAdmin && baseUser != null) {
+        baseUser.copy(name = "Admin User", role = "Administrator")
+    } else {
+        baseUser
+    }
 
     Scaffold(
         containerColor = Color(0xFF0D1117),
@@ -52,68 +65,75 @@ fun SettingsScreen(
             }
         }
     ) { padding ->
-        Column(
-            modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(0.dp)
-        ) {
-            // Profile hero card
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                    .background(Brush.verticalGradient(listOf(Color(0xFF00897B).copy(0.3f), Color.Transparent)))
-                    .padding(24.dp)
+        if (user == null) {
+            // Show loading if no user data is found yet
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = Color(0xFF00897B))
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Box(
-                        modifier = Modifier.size(64.dp).clip(CircleShape)
-                            .background(Brush.linearGradient(listOf(Color(0xFF00897B), Color(0xFF004D40)))),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(user.name.take(1), fontSize = 26.sp, fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, color = Color.White)
-                    }
-                    Column {
-                        Text(user.name, fontSize = 18.sp, fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, color = Color.White)
-                        Text(user.role, fontSize = 13.sp, fontFamily = InterFamily, color = Color(0xFF9CA3AF))
-                        Spacer(Modifier.height(4.dp))
-                        Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(if (isAdmin) Color(0xFF00796B).copy(0.2f) else Color(0xFF5C35CC).copy(0.2f)).padding(horizontal = 10.dp, vertical = 3.dp)) {
-                            Text(if (isAdmin) "Admin" else "Staff", fontSize = 11.sp, fontFamily = InterFamily, color = if (isAdmin) Color(0xFF4DB6AC) else Color(0xFF9B7EF8))
+                // Profile hero card
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                        .background(Brush.verticalGradient(listOf(Color(0xFF00897B).copy(0.3f), Color.Transparent)))
+                        .padding(24.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Box(
+                            modifier = Modifier.size(64.dp).clip(CircleShape)
+                                .background(Brush.linearGradient(listOf(Color(0xFF00897B), Color(0xFF004D40)))),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(user.name.take(1), fontSize = 26.sp, fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, color = Color.White)
+                        }
+                        Column {
+                            Text(user.name, fontSize = 18.sp, fontFamily = PoppinsFamily, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(user.role, fontSize = 13.sp, fontFamily = InterFamily, color = Color(0xFF9CA3AF))
+                            Spacer(Modifier.height(4.dp))
+                            Box(modifier = Modifier.clip(RoundedCornerShape(6.dp)).background(if (isAdmin) Color(0xFF00796B).copy(0.2f) else Color(0xFF5C35CC).copy(0.2f)).padding(horizontal = 10.dp, vertical = 3.dp)) {
+                                Text(if (isAdmin) "Admin" else "Staff", fontSize = 11.sp, fontFamily = InterFamily, color = if (isAdmin) Color(0xFF4DB6AC) else Color(0xFF9B7EF8))
+                            }
                         }
                     }
                 }
-            }
 
-            Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(8.dp))
 
-            // Account section
-            SettingsSectionHeader("Account")
-            SettingsItem(Icons.Default.Person, "Profile Info", "Update your personal details", Color(0xFF00796B)) { onProfileClick() }
-            SettingsItem(Icons.Default.Lock, "Change Password", "Update your login credentials", Color(0xFF00796B)) { onChangePasswordClick() }
-            SettingsItem(Icons.Default.Notifications, "Notifications", "Manage alerts & reminders", Color(0xFF00796B)) { onNotificationsClick() }
+                // Account section
+                SettingsSectionHeader("Account")
+                SettingsItem(Icons.Default.Person, "Profile Info", "Update your personal details", Color(0xFF00796B)) { onProfileClick() }
+                SettingsItem(Icons.Default.Lock, "Change Password", "Update your login credentials", Color(0xFF00796B)) { onChangePasswordClick() }
+                SettingsItem(Icons.Default.Notifications, "Notifications", "Manage alerts & reminders", Color(0xFF00796B)) { onNotificationsClick() }
 
-            Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(8.dp))
 
-            // App section
-            SettingsSectionHeader("Application")
-            SettingsItem(Icons.Default.Info, "About EMT", "Version, licenses & team", Color(0xFF6366F1)) { onAboutClick() }
-            SettingsItem(Icons.Default.Policy, "Privacy Policy", "How we protect your data", Color(0xFF6366F1)) {}
-            SettingsItem(Icons.Default.HelpOutline, "Help & Support", "FAQs and contact us", Color(0xFF6366F1)) {}
+                // App section
+                SettingsSectionHeader("Application")
+                SettingsItem(Icons.Default.Info, "About EMT", "Version, licenses & team", Color(0xFF6366F1)) { onAboutClick() }
+                SettingsItem(Icons.Default.Policy, "Privacy Policy", "How we protect your data", Color(0xFF6366F1)) {}
+                SettingsItem(Icons.Default.HelpOutline, "Help & Support", "FAQs and contact us", Color(0xFF6366F1)) {}
 
-            Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-            // Logout
-            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Button(
-                    onClick = onLogout,
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336).copy(0.12f)),
-                    border = BorderStroke(1.dp, Color(0xFFF44336).copy(0.3f))
-                ) {
-                    Icon(Icons.Default.Logout, null, tint = Color(0xFFEF9A9A), modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(8.dp))
-                    Text("Sign Out", fontFamily = PoppinsFamily, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = Color(0xFFEF9A9A))
+                // Logout
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                    Button(
+                        onClick = onLogout,
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336).copy(0.12f)),
+                        border = BorderStroke(1.dp, Color(0xFFF44336).copy(0.3f))
+                    ) {
+                        Icon(Icons.Default.Logout, null, tint = Color(0xFFEF9A9A), modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text("Sign Out", fontFamily = PoppinsFamily, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, color = Color(0xFFEF9A9A))
+                    }
                 }
+                Spacer(Modifier.height(32.dp))
             }
-            Spacer(Modifier.height(32.dp))
         }
     }
 }
